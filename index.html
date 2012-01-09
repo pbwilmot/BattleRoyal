@@ -1,0 +1,385 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <script src="http://www.html5canvastutorials.com/libraries/kinetic-v3.4.3.js"></script>
+<script src="Player.js"></script>
+        <script>
+		/*GLOBALS */
+			/* THE SCALE FACTOR WILL RESIZE EVERYTHING*/
+			var scale_factor = .3;
+			var map_size={
+				x: 750,
+				y: 519
+			}
+			
+		/* utility functions */
+			// get the number of elements in an object
+			Object.size = function(obj) {
+			    var size = 0, key;
+			    for (key in obj) {
+			        if (obj.hasOwnProperty(key)) size++;
+			    }
+			    return size;
+			};
+			//shuffle an array object
+			function shuffle(sourceArray) {
+				console.log("IN SHUFFLE: " + sourceArray.length);
+			    for (var n = 0; n < sourceArray.length - 1; n++) {
+			        var k = n + Math.floor(Math.random() * (sourceArray.length - n));
+
+			        var temp = sourceArray[k];
+			        sourceArray[k] = sourceArray[n];
+			        sourceArray[n] = temp;
+			    }
+			}
+			
+			/* for testing */
+            function writeMessage(context, message){
+                context.fillStyle = "white";
+                context.fillRect(0, 0, 100, 20);
+                context.font = "10pt Calibri";
+                context.fillStyle = "black";
+                context.fillText(message, 10, 10);
+            }
+			/* for updating unit counts */
+			function writeValue(context, x, y, r,message, color){
+                context.fillStyle = "white";
+                context.fillRect(x * scale_factor - (r*scale_factor)/2, y * scale_factor - r/2, r*scale_factor, r*scale_factor);
+                context.font = "10pt Calibri";
+                context.fillStyle = color;
+                context.fillText(message, x * scale_factor - (r*scale_factor)/4, (y * scale_factor)+ (r*scale_factor)/4);
+            }
+/*
+* GAME FUNCTIONS
+*/
+			function initGameSelect(){
+				/* have players pick territories*/
+				var size = Object.size(territories);
+				for(var i = 0; i < size; i ++){
+
+				}
+			};
+			function initGameRandom(){
+				/* have players pick territories*/
+				var size = Object.size(territories);
+
+				var shuffledTerr = Array.prototype.slice.call(continents);
+				console.log(shuffledTerr);
+				shuffle(shuffledTerr);
+				console.log("SHUFFLED FORM:: " + shuffledTerr);
+			/*	for(var terr in shuffle(territories)){
+					console.log(terr);
+				}
+			*/
+			};
+			function game(numPlayers){
+				console.log(numPlayers);
+				/*
+				var players = new Array(numPlayers);
+				for(i=0;i<numPlayers;i++){
+					players[i] = [5];
+				}
+				console.log("players : " + players);
+				//initGameRandom(players);
+*/
+			};            
+
+
+
+            window.onload = function(){
+                var stage = new Kinetic.Stage("container", map_size.x * scale_factor, map_size.y * scale_factor);
+                var canvas = stage.getCanvas();
+                var stageContext = stage.getContext();
+                var showImageMap = false;                
+                var imageObj = new Image();
+                imageObj.onload = function(){
+                    // draw map
+                    stageContext.drawImage(imageObj, 0, 0, canvas.width, canvas.height);
+                    
+                    // draw shape overlays
+                    for (var pubKey in territories) {
+                        (function(){
+                            var key = pubKey;
+                            var terr = territories[key];
+                            /* set up the territory listeners on a higher canvas */
+                            var terrOverlay = new Kinetic.Shape(function(){
+                                var context = this.getContext();
+                                context.beginPath();
+                                context.arc(terr.x * scale_factor, terr.y * scale_factor, terr.radius * scale_factor, 0, Math.PI * 2, false);
+                                context.closePath();
+								/* draw the territory icons */
+                                	context.fillStyle = "rgba(0, 0, 0, .5)";
+                                	context.fill();
+                            });
+                            
+                            terrOverlay.on("mouseover", function(){
+								var curterr = territories[key];
+                                writeMessage(stageContext, key + " x:" + curterr.x);
+                            	writeValue(stageContext, curterr.x, curterr.y, curterr.radius, 1, "red");
+							});
+                            terrOverlay.on("mouseout", function(){
+                                var curterr = territories[key];
+                                writeMessage(stageContext, "");
+                            	writeValue(stageContext, curterr.x, curterr.y,curterr.radius,  0, "red");
+                            });
+                            
+                            //terrOverlay.fill = false;
+                            stage.add(terrOverlay);
+                        }());
+                    }
+                };
+                imageObj.src = "images/risk_board.png";
+				
+				game(2);
+            };
+
+
+
+
+var continents = {
+	North_America: {
+		value: 5
+	},
+	South_America:{
+		value: 2
+	},
+	Europe: {
+		value: 5
+	},
+	Africa: {
+		value: 3
+	},
+	Asia: {
+		value: 7
+	},
+	Australia: {
+		value: 2
+	}					
+}; 
+
+var territories = {
+/* North America */
+    Alaska: {
+        x: 60,
+        y: 80,
+        radius: 16
+    },
+	Northwest_Territories: {
+        x: 120,
+        y: 80,
+        radius: 16
+    },
+	Greenland: {
+        x: 265,
+        y: 55,
+        radius: 16
+    },
+	Alberta: {
+        x: 120,
+        y: 120,
+        radius: 16
+    },
+    Ontario: {
+        x: 170,
+        y: 130,
+        radius: 16
+    },
+	Quebec: {
+        x: 215,
+        y: 127,
+        radius: 16
+    },
+    Western_United_States: {
+        x: 120,
+        y: 170,
+        radius: 16
+    },
+    Eastern_United_States: {
+        x: 175,
+        y: 190,
+        radius: 16
+    },
+    Central_America: {
+       x: 130,
+       y: 240,
+       radius: 16
+    },
+/* South America */
+	Venezuela: {
+        x: 180,
+        y: 280,
+        radius: 16
+    },
+	Brazil: {
+        x: 240,
+        y: 330,
+        radius: 16
+    },
+	Peru: {
+        x: 190,
+        y: 350,
+        radius: 16
+    },
+	Argentina: {
+       x: 190,
+       y: 410,
+       radius: 16
+    },
+/* Europe */
+	Iceland: {
+	    x: 323,
+	    y: 105,
+	    radius: 13
+	},
+	Great_Britain: {
+	    x: 307,
+	    y: 160,
+	    radius: 16
+	},
+	Western_Europe:{
+		x: 325,
+		y: 220,
+		radius: 16
+	},
+	Scandinavia:{
+		x: 385,
+		y: 100,
+		radius: 16
+	},
+	Northern_Europe:{
+		x: 375,
+		y: 170,
+		radius: 16
+	},
+	Southern_Europe:{
+		x: 385,
+		y: 220,
+		radius: 16
+	},
+	Ukraine:{
+		x: 440,
+		y: 140,
+		radius: 16
+	},
+/* Africa */
+	North_Africa:{
+		x: 355,
+		y: 310,
+		radius: 16
+	},
+	Egypt:{
+		x: 408,
+		y: 290,
+		radius: 16
+	},
+	Congo:{
+		x: 408,
+		y: 372,
+		radius: 16
+	},
+	East_Africa:{
+		x: 450,
+		y: 350,
+		radius: 16
+	},
+	South_Africa:{
+		x: 410,
+		y: 440,
+		radius: 16
+	},
+	Madagascar:{
+		x: 475,
+		y: 440,
+		radius: 13
+	},
+/* Asia */
+	Kamchatka:{
+		x: 665,
+		y: 75,
+		radius: 16
+	},
+	Japan:{
+		x: 680,
+		y: 180,
+		radius: 13
+	},
+	Mongolia:{
+		x: 610,
+		y: 180,
+		radius: 16
+	},
+	Irkutsk:{
+		x: 595,
+		y: 130,
+		radius: 16
+	},
+	Yakutsk:{
+		x: 610,
+		y: 70,
+		radius: 16
+	},
+	Siberia:{
+		x: 555,
+		y: 100,
+		radius: 16
+	},
+	Ural:{
+		x: 515,
+		y: 120,
+		radius: 16
+	},
+	Afghanistan:{
+		x: 505,
+		y: 190,
+		radius: 16
+	},
+	China:{
+		x: 595,
+		y: 230,
+		radius: 16
+	},
+	Middle_East:{
+		x: 465,
+		y: 255,
+		radius: 16
+	},
+	India:{
+		x: 545,
+		y: 265,
+		radius: 16
+	},
+	Siam:{
+		x: 605,
+		y: 285,
+		radius: 16
+	},
+/* Australia */
+	Indonesia:{
+		x: 620,
+		y: 363,
+		radius: 16
+	},
+	New_Guinea:{
+		x: 680,
+		y: 348,
+		radius: 13
+	},
+	Western_Australia:{
+		x: 645,
+		y: 440,
+		radius: 16
+	},
+	Eastern_Australia:{
+		x: 700,
+		y: 420,
+		radius: 16
+	}
+};
+        </script>
+    </head>
+    <body onmousedown="return false;">
+        
+        <div id="container">
+    	</div>
+    </body>
+</html>
